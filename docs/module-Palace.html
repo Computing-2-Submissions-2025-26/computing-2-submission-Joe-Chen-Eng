@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Palace - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Palace.html">Palace</a><ul class='members'><li data-type='member'><a href="module-Palace.html#.autoPlayTurn">autoPlayTurn</a></li><li data-type='member'><a href="module-Palace.html#.canPlayCard">canPlayCard</a></li><li data-type='member'><a href="module-Palace.html#.createGame">createGame</a></li><li data-type='member'><a href="module-Palace.html#.createTutorialGame">createTutorialGame</a></li><li data-type='member'><a href="module-Palace.html#.getCurrentPlayer">getCurrentPlayer</a></li><li data-type='member'><a href="module-Palace.html#.getPlayableCards">getPlayableCards</a></li><li data-type='member'><a href="module-Palace.html#.getTopCard">getTopCard</a></li><li data-type='member'><a href="module-Palace.html#.getTutorialSteps">getTutorialSteps</a></li><li data-type='member'><a href="module-Palace.html#.getVisibleState">getVisibleState</a></li><li data-type='member'><a href="module-Palace.html#.getWinner">getWinner</a></li><li data-type='member'><a href="module-Palace.html#.isGameOver">isGameOver</a></li><li data-type='member'><a href="module-Palace.html#.pickUpPile">pickUpPile</a></li><li data-type='member'><a href="module-Palace.html#.playCards">playCards</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Palace</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext"><p>Palace is a turn-based card game for four players. Players try to be the
+first to empty their hand, face-up palace cards, and face-down palace cards.
+The module is written as pure functions so a complete game can be simulated
+from the browser console or from unit tests.</p></div>
+            
+
+            
+                
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Palace is a turn-based card game for four players. Players try to be the
+first to empty their hand, face-up palace cards, and face-down palace cards.
+The module is written as pure functions so a complete game can be simulated
+from the browser console or from unit tests.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".autoPlayTurn"><span class="type-signature type-signature-static, constant">(static, constant) </span>autoPlayTurn<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Run a simple computer move. An AI player plays its lowest legal rank, or
+picks up when no visible card is playable.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line480">line 480</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Run a simple computer move. An AI player plays its lowest legal rank, or
+picks up when no visible card is playable.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".canPlayCard"><span class="type-signature type-signature-static, constant">(static, constant) </span>canPlayCard<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Test whether one card is legal on the current pile.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line363">line 363</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Test whether one card is legal on the current pile.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".createGame"><span class="type-signature type-signature-static, constant">(static, constant) </span>createGame<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Create a new four-player Palace game.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line243">line 243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Create a new four-player Palace game.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".createTutorialGame"><span class="type-signature type-signature-static, constant">(static, constant) </span>createTutorialGame<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Create a fixed training game designed for the interactive tutorial. The
+layout deliberately shows a playable pile, useful palace cards, and visible
+opponent palace cards so each tutorial step has a clear example.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line276">line 276</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Create a fixed training game designed for the interactive tutorial. The
+layout deliberately shows a playable pile, useful palace cards, and visible
+opponent palace cards so each tutorial step has a clear example.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getCurrentPlayer"><span class="type-signature type-signature-static, constant">(static, constant) </span>getCurrentPlayer<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Find the player whose turn it currently is.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line339">line 339</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Find the player whose turn it currently is.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getPlayableCards"><span class="type-signature type-signature-static, constant">(static, constant) </span>getPlayableCards<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return all legal cards for a player from their current playable area.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line380">line 380</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Return all legal cards for a player from their current playable area.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getTopCard"><span class="type-signature type-signature-static, constant">(static, constant) </span>getTopCard<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Find the card that the next played card must beat. A 2 resets the pile.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line349">line 349</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Find the card that the next played card must beat. A 2 resets the pile.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getTutorialSteps"><span class="type-signature type-signature-static, constant">(static, constant) </span>getTutorialSteps<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Explain the Palace rules used by this implementation.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line569">line 569</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Explain the Palace rules used by this implementation.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getVisibleState"><span class="type-signature type-signature-static, constant">(static, constant) </span>getVisibleState<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Create a browser-safe state snapshot. The human player's hand is visible,
+while AI hands and all face-down palace cards stay hidden.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line537">line 537</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Create a browser-safe state snapshot. The human player's hand is visible,
+while AI hands and all face-down palace cards stay hidden.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".getWinner"><span class="type-signature type-signature-static, constant">(static, constant) </span>getWinner<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Return the winning player when the game is over.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line524">line 524</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Return the winning player when the game is over.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".isGameOver"><span class="type-signature type-signature-static, constant">(static, constant) </span>isGameOver<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Check whether the game is over.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line514">line 514</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Check whether the game is over.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".pickUpPile"><span class="type-signature type-signature-static, constant">(static, constant) </span>pickUpPile<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Make the active player pick up the whole pile because they cannot or do not
+want to play.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line460">line 460</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Make the active player pick up the whole pile because they cannot or do not
+want to play.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".playCards"><span class="type-signature type-signature-static, constant">(static, constant) </span>playCards<span class="type-signature"></span></h4>
+
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li><p>Play one or more cards of the same rank from the active player's current
+area. When a face-down card is illegal, the player must take the pile.</p></li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line401">line 401</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description usertext">
+    <p>Play one or more cards of the same rank from the active player's current
+area. When a face-down card is illegal, the player must take the pile.</p>
+</div>
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+<h4 class="name" id="~Card">Card</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Unique card identifier, e.g. &quot;AS&quot;.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rank</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Card rank. Special ranks are &quot;2&quot; and &quot;10&quot;.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>suit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Card suit: &quot;S&quot;, &quot;H&quot;, &quot;D&quot;, or &quot;C&quot;.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="~GameState">GameState</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line44">line 44</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>players</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Player></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The human player is index 0 and the other players are computer-controlled.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>currentPlayer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Index of the player whose turn it is.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>drawPile</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Face-down deck used to refill hands up to three cards.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pile</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Cards in the current discard pile.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>burned</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Cards removed from play by a 10 or four of a kind.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>log</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Most recent game events.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>winner</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+|
+
+<span class="param-type">null</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Index of the winning player, or null if the game is not over.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>phase</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Short description of the active player's current playable area.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="~Player">Player</h4>
+
+
+
+
+
+<dl class="details">
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="Module.js.html">Module.js</a>, <a href="Module.js.html#line36">line 36</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Player display name.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hand</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Cards currently available to choose.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>faceUp</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Palace cards that are visible once the hand is empty.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>faceDown</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Card></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Palace cards that are played blind at the end.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+    <h5 class="h5-types">Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Jun 24 2026 23:44:47 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+    <link type="text/css" rel="stylesheet" href="custom.css">
+    
+</body>
+</html>

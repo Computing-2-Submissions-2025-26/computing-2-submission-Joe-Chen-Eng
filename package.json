@@ -1,11 +1,15 @@
 {
-  "name": "computing-2-submission",
+  "name": "palace-card-duel",
   "type": "module",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Computing 2 Palace card game submission.",
   "main": "web-app/Module.js",
-  "author": "",
+  "author": "Joe Chen",
   "license": "ISC",
+  "scripts": {
+    "test": "mocha",
+    "docs": "jsdoc -c jsdoc.json"
+  },
   "dependencies": {
     "ramda": "^0.32.0"
   },

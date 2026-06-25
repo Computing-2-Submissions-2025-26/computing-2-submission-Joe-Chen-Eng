@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>Module.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Palace.html">Palace</a><ul class='members'><li data-type='member'><a href="module-Palace.html#.autoPlayTurn">autoPlayTurn</a></li><li data-type='member'><a href="module-Palace.html#.canPlayCard">canPlayCard</a></li><li data-type='member'><a href="module-Palace.html#.createGame">createGame</a></li><li data-type='member'><a href="module-Palace.html#.createTutorialGame">createTutorialGame</a></li><li data-type='member'><a href="module-Palace.html#.getCurrentPlayer">getCurrentPlayer</a></li><li data-type='member'><a href="module-Palace.html#.getPlayableCards">getPlayableCards</a></li><li data-type='member'><a href="module-Palace.html#.getTopCard">getTopCard</a></li><li data-type='member'><a href="module-Palace.html#.getTutorialSteps">getTutorialSteps</a></li><li data-type='member'><a href="module-Palace.html#.getVisibleState">getVisibleState</a></li><li data-type='member'><a href="module-Palace.html#.getWinner">getWinner</a></li><li data-type='member'><a href="module-Palace.html#.isGameOver">isGameOver</a></li><li data-type='member'><a href="module-Palace.html#.pickUpPile">pickUpPile</a></li><li data-type='member'><a href="module-Palace.html#.playCards">playCards</a></li></ul></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Module.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Palace is a turn-based card game for four players. Players try to be the
+ * first to empty their hand, face-up palace cards, and face-down palace cards.
+ * The module is written as pure functions so a complete game can be simulated
+ * from the browser console or from unit tests.
+ *
+ * @module Palace
+ */
+
+const ranks = ["3", "4", "5", "6", "7", "8", "9", "J", "Q", "K", "A", "2", "10"];
+const suits = ["S", "H", "D", "C"];
+
+const rankValues = {
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "J": 11,
+    "Q": 12,
+    "K": 13,
+    "A": 14,
+    "2": 15,
+    "10": 16
+};
+
+/**
+ * @typedef {Object} Card
+ * @property {string} id Unique card identifier, e.g. "AS".
+ * @property {string} rank Card rank. Special ranks are "2" and "10".
+ * @property {string} suit Card suit: "S", "H", "D", or "C".
+ */
+
+/**
+ * @typedef {Object} Player
+ * @property {string} name Player display name.
+ * @property {Card[]} hand Cards currently available to choose.
+ * @property {Card[]} faceUp Palace cards that are visible once the hand is empty.
+ * @property {Card[]} faceDown Palace cards that are played blind at the end.
+ */
+
+/**
+ * @typedef {Object} GameState
+ * @property {Player[]} players The human player is index 0 and the other players are computer-controlled.
+ * @property {number} currentPlayer Index of the player whose turn it is.
+ * @property {Card[]} drawPile Face-down deck used to refill hands up to three cards.
+ * @property {Card[]} pile Cards in the current discard pile.
+ * @property {Card[]} burned Cards removed from play by a 10 or four of a kind.
+ * @property {string[]} log Most recent game events.
+ * @property {number|null} winner Index of the winning player, or null if the game is not over.
+ * @property {string} phase Short description of the active player's current playable area.
+ */
+
+const cloneCard = function (card) {
+    return {
+        id: card.id,
+        rank: card.rank,
+        suit: card.suit
+    };
+};
+
+const cloneCards = function (cards) {
+    return cards.map(cloneCard);
+};
+
+const clonePlayer = function (player) {
+    return {
+        name: player.name,
+        hand: cloneCards(player.hand),
+        faceUp: cloneCards(player.faceUp),
+        faceDown: cloneCards(player.faceDown)
+    };
+};
+
+const cloneState = function (state) {
+    return {
+        players: state.players.map(clonePlayer),
+        currentPlayer: state.currentPlayer,
+        drawPile: cloneCards(state.drawPile),
+        pile: cloneCards(state.pile),
+        burned: cloneCards(state.burned),
+        log: state.log.slice(),
+        winner: state.winner,
+        phase: state.phase
+    };
+};
+
+const log = function (state, message) {
+    return {
+        ...state,
+        log: [message].concat(state.log).slice(0, 8)
+    };
+};
+
+const nextSeed = function (seed) {
+    return (seed * 1664525 + 1013904223) % 4294967296;
+};
+
+const randomBetween = function (seed, maximum) {
+    const next = nextSeed(seed);
+    return {
+        seed: next,
+        value: Math.floor((next / 4294967296) * maximum)
+    };
+};
+
+const makeDeck = function () {
+    return suits.flatMap(function (suit) {
+        return ranks.map(function (rank) {
+            return {
+                id: rank + suit,
+                rank,
+                suit
+            };
+        });
+    });
+};
+
+const shuffle = function (cards, seed) {
+    const shuffled = cloneCards(cards);
+    let activeSeed = seed;
+
+    for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const random = randomBetween(activeSeed, index + 1);
+        activeSeed = random.seed;
+        const temp = shuffled[index];
+        shuffled[index] = shuffled[random.value];
+        shuffled[random.value] = temp;
+    }
+
+    return shuffled;
+};
+
+const drawToThree = function (player, drawPile) {
+    const nextPlayer = clonePlayer(player);
+    const nextDrawPile = cloneCards(drawPile);
+
+    while (nextPlayer.hand.length &lt; 3 &amp;&amp; nextDrawPile.length > 0) {
+        nextPlayer.hand = nextPlayer.hand.concat([nextDrawPile[0]]);
+        nextDrawPile.shift();
+    }
+
+    return {
+        player: nextPlayer,
+        drawPile: nextDrawPile
+    };
+};
+
+const topActiveCard = function (pile) {
+    return pile.length === 0
+        ? null
+        : pile[pile.length - 1];
+};
+
+const activeArea = function (player) {
+    if (player.hand.length > 0) {
+        return "hand";
+    }
+
+    if (player.faceUp.length > 0) {
+        return "faceUp";
+    }
+
+    return "faceDown";
+};
+
+const removeCardsById = function (cards, cardIds) {
+    return cards.filter(function (card) {
+        return !cardIds.includes(card.id);
+    });
+};
+
+const cardsFromIds = function (cards, cardIds) {
+    return cardIds.map(function (cardId) {
+        return cards.find(function (card) {
+            return card.id === cardId;
+        });
+    }).filter(Boolean);
+};
+
+const allSameRank = function (cards) {
+    return cards.length > 0 &amp;&amp; cards.every(function (card) {
+        return card.rank === cards[0].rank;
+    });
+};
+
+const completesFourOfAKind = function (pile) {
+    if (pile.length &lt; 4) {
+        return false;
+    }
+
+    const topRank = pile[pile.length - 1].rank;
+    return pile.slice(-4).every(function (card) {
+        return card.rank === topRank;
+    });
+};
+
+const hasNoCards = function (player) {
+    return player.hand.length === 0
+        &amp;&amp; player.faceUp.length === 0
+        &amp;&amp; player.faceDown.length === 0;
+};
+
+const withUpdatedPhase = function (state) {
+    return {
+        ...state,
+        phase: state.winner === null
+            ? activeArea(state.players[state.currentPlayer])
+            : "finished"
+    };
+};
+
+const finishTurn = function (state, playerIndex, keepsTurn) {
+    const refilled = drawToThree(state.players[playerIndex], state.drawPile);
+    const players = state.players.map(function (player, index) {
+        return index === playerIndex
+            ? refilled.player
+            : clonePlayer(player);
+    });
+    const winnerIndex = players.findIndex(hasNoCards);
+
+    return withUpdatedPhase({
+        ...state,
+        players,
+        drawPile: refilled.drawPile,
+        currentPlayer: keepsTurn
+            ? playerIndex
+            : (playerIndex + 1) % players.length,
+        winner: winnerIndex === -1
+            ? null
+            : winnerIndex
+    });
+};
+
+/**
+ * Create a new four-player Palace game.
+ *
+ * @param {number} [seed=2026] Seed used for deterministic shuffling.
+ * @returns {GameState} Initial game state.
+ */
+export const createGame = function (seed = 2026) {
+    const deck = shuffle(makeDeck(), seed);
+    const names = ["You", "Left AI", "Top AI", "Right AI"];
+    const players = names.map(function (name, index) {
+        const offset = index * 9;
+
+        return {
+            name,
+            hand: deck.slice(offset, offset + 3),
+            faceUp: deck.slice(offset + 3, offset + 6),
+            faceDown: deck.slice(offset + 6, offset + 9)
+        };
+    });
+
+    return withUpdatedPhase({
+        players,
+        currentPlayer: 0,
+        drawPile: deck.slice(36),
+        pile: [],
+        burned: [],
+        log: ["Welcome to four-player Palace. Start from your hand, then your palace."],
+        winner: null,
+        phase: "hand"
+    });
+};
+
+/**
+ * Create a fixed training game designed for the interactive tutorial. The
+ * layout deliberately shows a playable pile, useful palace cards, and visible
+ * opponent palace cards so each tutorial step has a clear example.
+ *
+ * @returns {GameState} Prepared tutorial game state.
+ */
+export const createTutorialGame = function () {
+    const deck = makeDeck();
+    const findCard = function (id) {
+        return cloneCard(deck.find(function (card) {
+            return card.id === id;
+        }));
+    };
+    const cards = function (ids) {
+        return ids.map(findCard);
+    };
+    const usedIds = [
+        "5S", "QH", "2D", "2H", "10S", "8D", "3C", "4C", "5C",
+        "AH", "6S", "7D", "6H", "JC", "AS", "3D", "4D", "5D",
+        "QS", "8C", "KH", "2C", "10D", "QC", "3H", "4H", "5H",
+        "JH", "6C", "AD", "8H", "KC", "9D", "3S", "4S", "KS",
+        "9C"
+    ];
+
+    return withUpdatedPhase({
+        players: [
+            {
+                name: "You",
+                hand: cards(["5S", "QH", "2D"]),
+                faceUp: cards(["2H", "10S", "8D"]),
+                faceDown: cards(["3C", "4C", "5C"])
+            },
+            {
+                name: "Left AI",
+                hand: cards(["AH", "6S", "7D"]),
+                faceUp: cards(["6H", "JC", "AS"]),
+                faceDown: cards(["3D", "4D", "5D"])
+            },
+            {
+                name: "Top AI",
+                hand: cards(["QS", "8C", "KH"]),
+                faceUp: cards(["2C", "10D", "QC"]),
+                faceDown: cards(["3H", "4H", "5H"])
+            },
+            {
+                name: "Right AI",
+                hand: cards(["JH", "6C", "AD"]),
+                faceUp: cards(["8H", "KC", "9D"]),
+                faceDown: cards(["3S", "4S", "KS"])
+            }
+        ],
+        currentPlayer: 0,
+        drawPile: deck.filter(function (card) {
+            return !usedIds.includes(card.id);
+        }),
+        pile: cards(["9C"]),
+        burned: [],
+        log: ["Tutorial deal loaded. Try playing a highlighted card from your hand."],
+        winner: null,
+        phase: "hand"
+    });
+};
+
+/**
+ * Find the player whose turn it currently is.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {Player} Active player.
+ */
+export const getCurrentPlayer = function (state) {
+    return clonePlayer(state.players[state.currentPlayer]);
+};
+
+/**
+ * Find the card that the next played card must beat. A 2 resets the pile.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {Card|null} Top active card, or null when any card may be played.
+ */
+export const getTopCard = function (state) {
+    const topCard = topActiveCard(state.pile);
+    return topCard === null || topCard.rank === "2"
+        ? null
+        : cloneCard(topCard);
+};
+
+/**
+ * Test whether one card is legal on the current pile.
+ *
+ * @param {Card} card Card being tested.
+ * @param {GameState} state Current game state.
+ * @returns {boolean} True when the card can legally be played.
+ */
+export const canPlayCard = function (card, state) {
+    const topCard = getTopCard(state);
+
+    if (card.rank === "2" || card.rank === "10" || topCard === null) {
+        return true;
+    }
+
+    return rankValues[card.rank] >= rankValues[topCard.rank];
+};
+
+/**
+ * Return all legal cards for a player from their current playable area.
+ *
+ * @param {GameState} state Current game state.
+ * @param {number} [playerIndex=state.currentPlayer] Player to inspect.
+ * @returns {Card[]} Legal cards from hand, face-up palace, or face-down palace.
+ */
+export const getPlayableCards = function (state, playerIndex = state.currentPlayer) {
+    const player = state.players[playerIndex];
+    const area = activeArea(player);
+
+    if (area === "faceDown") {
+        return cloneCards(player.faceDown);
+    }
+
+    return player[area].filter(function (card) {
+        return canPlayCard(card, state);
+    }).map(cloneCard);
+};
+
+/**
+ * Play one or more cards of the same rank from the active player's current
+ * area. When a face-down card is illegal, the player must take the pile.
+ *
+ * @param {GameState} state Current game state.
+ * @param {string[]} cardIds Card ids to play.
+ * @returns {GameState} New game state after the move.
+ */
+export const playCards = function (state, cardIds) {
+    if (state.winner !== null) {
+        return cloneState(state);
+    }
+
+    const next = cloneState(state);
+    const playerIndex = next.currentPlayer;
+    const player = next.players[playerIndex];
+    const area = activeArea(player);
+    const selected = cardsFromIds(player[area], cardIds);
+
+    if (selected.length !== cardIds.length || !allSameRank(selected)) {
+        throw new Error("Select one rank from your current playable area.");
+    }
+
+    if (area !== "faceDown" &amp;&amp; !selected.every(function (card) {
+        return canPlayCard(card, next);
+    })) {
+        throw new Error("That card cannot be played on the current pile.");
+    }
+
+    player[area] = removeCardsById(player[area], cardIds);
+    const attemptedPile = next.pile.concat(selected);
+    const illegalBlindCard = area === "faceDown" &amp;&amp; !canPlayCard(selected[0], next);
+
+    if (illegalBlindCard) {
+        player.hand = player.hand.concat(attemptedPile);
+        return withUpdatedPhase(log(finishTurn({
+            ...next,
+            players: next.players,
+            pile: []
+        }, playerIndex, false), `${player.name} revealed ${selected[0].rank} and picked up the pile.`));
+    }
+
+    const shouldBurn = selected[0].rank === "10" || completesFourOfAKind(attemptedPile);
+    const afterPlay = {
+        ...next,
+        pile: shouldBurn
+            ? []
+            : attemptedPile,
+        burned: shouldBurn
+            ? next.burned.concat(attemptedPile)
+            : next.burned
+    };
+    const keepsTurn = shouldBurn;
+    const message = shouldBurn
+        ? `${player.name} played ${selected.length} ${selected[0].rank} and cleared the pile.`
+        : `${player.name} played ${selected.length} ${selected[0].rank}.`;
+
+    return log(finishTurn(afterPlay, playerIndex, keepsTurn), message);
+};
+
+/**
+ * Make the active player pick up the whole pile because they cannot or do not
+ * want to play.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {GameState} New game state after picking up.
+ */
+export const pickUpPile = function (state) {
+    if (state.pile.length === 0 || state.winner !== null) {
+        return cloneState(state);
+    }
+
+    const next = cloneState(state);
+    const player = next.players[next.currentPlayer];
+    player.hand = player.hand.concat(next.pile);
+    next.pile = [];
+
+    return log(finishTurn(next, next.currentPlayer, false), `${player.name} picked up the pile.`);
+};
+
+/**
+ * Run a simple computer move. An AI player plays its lowest legal rank, or
+ * picks up when no visible card is playable.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {GameState} New game state after the AI move.
+ */
+export const autoPlayTurn = function (state) {
+    if (state.winner !== null || state.currentPlayer === 0) {
+        return cloneState(state);
+    }
+
+    const aiIndex = state.currentPlayer;
+    const legalCards = getPlayableCards(state, aiIndex);
+
+    if (legalCards.length === 0) {
+        return pickUpPile(state);
+    }
+
+    const chosen = legalCards.reduce(function (best, card) {
+        return rankValues[card.rank] &lt; rankValues[best.rank]
+            ? card
+            : best;
+    }, legalCards[0]);
+    const player = state.players[aiIndex];
+    const area = activeArea(player);
+    const sameRank = player[area].filter(function (card) {
+        return card.rank === chosen.rank;
+    }).map(function (card) {
+        return card.id;
+    });
+
+    return playCards(state, sameRank);
+};
+
+/**
+ * Check whether the game is over.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {boolean} True when a player has no cards left.
+ */
+export const isGameOver = function (state) {
+    return state.winner !== null;
+};
+
+/**
+ * Return the winning player when the game is over.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {Player|null} Winning player, or null while the game continues.
+ */
+export const getWinner = function (state) {
+    return state.winner === null
+        ? null
+        : clonePlayer(state.players[state.winner]);
+};
+
+/**
+ * Create a browser-safe state snapshot. The human player's hand is visible,
+ * while AI hands and all face-down palace cards stay hidden.
+ *
+ * @param {GameState} state Current game state.
+ * @returns {Object} Public state for rendering.
+ */
+export const getVisibleState = function (state) {
+    return {
+        ...cloneState(state),
+        players: state.players.map(function (player, playerIndex) {
+            return {
+                ...clonePlayer(player),
+                hand: player.hand.map(function (card, cardIndex) {
+                    return playerIndex === 0
+                        ? cloneCard(card)
+                        : {
+                            id: `hidden-hand-${playerIndex}-${cardIndex}`,
+                            rank: "?",
+                            suit: "?"
+                        };
+                }),
+                faceDown: player.faceDown.map(function (card, cardIndex) {
+                    return {
+                        id: `hidden-${playerIndex}-${cardIndex}`,
+                        rank: "?",
+                        suit: "?"
+                    };
+                })
+            };
+        })
+    };
+};
+
+/**
+ * Explain the Palace rules used by this implementation.
+ *
+ * @returns {string[]} Tutorial steps suitable for display in the web app.
+ */
+export const getTutorialSteps = function () {
+    return [
+        "This is a four-player table. Your cards are at the bottom, and the three AI players are around the table.",
+        "Only your hand is visible. Other players' hands and all face-down palace cards are shown as card backs.",
+        "Play cards from your hand while the deck is still refilling you to three cards.",
+        "A card must be equal to or higher than the top card on the pile.",
+        "A 2 can be played on anything and resets the pile. A 10 clears the pile and gives you another turn.",
+        "Four cards of the same rank on top also clear the pile.",
+        "When your hand is empty, use your face-up palace cards. Then play face-down cards blindly.",
+        "If you cannot play, pick up the pile. The first player with no cards left wins."
+    ];
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Wed Jun 24 2026 23:44:47 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+    <link type="text/css" rel="stylesheet" href="custom.css">
+    
+</body>
+</html>

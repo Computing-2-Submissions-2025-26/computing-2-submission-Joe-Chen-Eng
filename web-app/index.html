@@ -1,9 +1,91 @@
-<!-- In HTML Comments are written like this -->
-<!-- They can all be removed for your apps -->
-<!doctype html> <!-- This first line tells browsers to expect modern standard html 5 -->
-<html lang="en-gb"> <!-- This is indicates the page is written in British English, useful for accessibility -->
-<meta charset="utf-8"> <!-- This indicates how the file is encoded. utf-8 is standard -->
-<title>Your Web-app Title</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
-<link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
-<link rel="icon" href="./assets/favicon.png"> <!-- Import 'Favorites Icon' – favicon.png -->
-<script type="module" src="main.js"></script> <!-- Load the main script. Must be type="module". Have only one of these -->
+<!doctype html>
+<html lang="en-gb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Palace Card Duel</title>
+    <link rel="stylesheet" href="default.css?v=notes-two-alone-2">
+    <script type="module" src="main.js?v=notes-two-alone-2"></script>
+</head>
+<body>
+    <header class="top-bar">
+        <div>
+            <p class="eyebrow">Computing 2 Web Game</p>
+            <h1>Palace Card Duel</h1>
+        </div>
+        <div class="header-actions">
+            <button id="guide-button" class="secondary-button" type="button">Guide</button>
+            <button id="restart-button" class="secondary-button" type="button">Restart</button>
+        </div>
+    </header>
+
+    <main>
+        <section id="tutorial" class="tutorial is-hidden" aria-labelledby="tutorial-title" aria-modal="true" role="dialog">
+            <div class="tutorial-card">
+                <p class="eyebrow">Tutorial</p>
+                <h2 id="tutorial-title">How to win the palace</h2>
+                <p id="tutorial-step-count" class="tutorial-step-count"></p>
+                <p id="tutorial-text" class="tutorial-text"></p>
+                <p id="tutorial-action" class="tutorial-action"></p>
+                <div class="tutorial-actions">
+                    <button id="tutorial-back" class="secondary-button" type="button">Back</button>
+                    <button id="tutorial-next" class="primary-button" type="button">Next</button>
+                    <button id="close-tutorial" class="secondary-button" type="button">Close</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="clear-notice" class="clear-notice is-hidden" aria-labelledby="clear-notice-title" aria-modal="true" role="dialog">
+            <div class="clear-notice-card">
+                <p class="eyebrow">Pile cleared</p>
+                <h2 id="clear-notice-title">The pile was cleared</h2>
+                <p id="clear-notice-text" class="clear-notice-text"></p>
+                <button id="clear-continue" class="primary-button" type="button">Continue</button>
+            </div>
+        </section>
+
+        <section class="status-grid" aria-label="Game status">
+            <div>
+                <p class="label">Turn</p>
+                <p id="turn-status" class="status-value">You</p>
+            </div>
+            <div>
+                <p class="label">Top card</p>
+                <p id="top-card" class="status-value">Any</p>
+            </div>
+            <div>
+                <p class="label">Draw pile</p>
+                <p id="draw-count" class="status-value">34</p>
+            </div>
+            <div>
+                <p class="label">Burned</p>
+                <p id="burned-count" class="status-value">0</p>
+            </div>
+        </section>
+
+        <section class="table four-player-table" aria-label="Four-player Palace table">
+            <article id="player-2" class="player-area seat seat-top" aria-label="Top AI"></article>
+            <article id="player-1" class="player-area seat seat-left" aria-label="Left AI"></article>
+
+            <article class="pile-area seat-centre" aria-labelledby="pile-title">
+                <div>
+                    <p class="eyebrow">Pile</p>
+                    <h2 id="pile-title">Current challenge</h2>
+                </div>
+                <div id="pile" class="pile-card" aria-live="polite"></div>
+                <div id="round-plays" class="round-plays" aria-label="Cards played this round"></div>
+                <p id="message" class="message" role="status"></p>
+                <button id="pickup-button" class="secondary-button" type="button">Pick up pile</button>
+            </article>
+
+            <article id="player-3" class="player-area seat seat-right" aria-label="Right AI"></article>
+            <article id="player-0" class="player-area seat seat-bottom" aria-label="You"></article>
+        </section>
+
+        <section class="log-panel" aria-labelledby="log-title">
+            <h2 id="log-title">Game log</h2>
+            <ul id="game-log"></ul>
+        </section>
+    </main>
+</body>
+</html>
