@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Palace Card Duel</title>
-    <link rel="stylesheet" href="default.css?v=notes-two-alone-2">
-    <script type="module" src="main.js?v=notes-two-alone-2"></script>
+    <link rel="stylesheet" href="default.css?v=current-player-highlight">
+    <script type="module" src="main.js?v=current-player-highlight"></script>
 </head>
 <body>
     <header class="top-bar">
@@ -41,6 +41,16 @@
                 <h2 id="clear-notice-title">The pile was cleared</h2>
                 <p id="clear-notice-text" class="clear-notice-text"></p>
                 <button id="clear-continue" class="primary-button" type="button">Continue</button>
+            </div>
+        </section>
+
+        <section id="result-notice" class="result-notice is-hidden" aria-labelledby="result-notice-title" aria-modal="true" role="dialog">
+            <div id="result-confetti" class="result-confetti" aria-hidden="true"></div>
+            <div class="result-notice-card">
+                <p id="result-notice-label" class="eyebrow">Round over</p>
+                <h2 id="result-notice-title">You win the round</h2>
+                <p id="result-notice-text" class="result-notice-text"></p>
+                <button id="result-continue" class="primary-button" type="button">Next round</button>
             </div>
         </section>
 

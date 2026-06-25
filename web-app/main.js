@@ -6,8 +6,9 @@ import {
     getTopCard,
     getVisibleState,
     playCards,
-    pickUpPile
-} from "./Module.js?v=notes-two-alone-2";
+    pickUpPile,
+    revealFaceDownCard
+} from "./Module.js?v=current-player-highlight";
 
 let state = createGame(Date.now() % 100000);
 let stateBeforeGuide = null;
@@ -72,6 +73,12 @@ const elements = {
     clearNotice: document.querySelector("#clear-notice"),
     clearNoticeText: document.querySelector("#clear-notice-text"),
     clearContinue: document.querySelector("#clear-continue"),
+    resultNotice: document.querySelector("#result-notice"),
+    resultConfetti: document.querySelector("#result-confetti"),
+    resultNoticeLabel: document.querySelector("#result-notice-label"),
+    resultNoticeTitle: document.querySelector("#result-notice-title"),
+    resultNoticeText: document.querySelector("#result-notice-text"),
+    resultContinue: document.querySelector("#result-continue"),
     guideButton: document.querySelector("#guide-button"),
     restartButton: document.querySelector("#restart-button"),
     pickupButton: document.querySelector("#pickup-button"),
@@ -98,6 +105,7 @@ let nextPlaySourceBox = null;
 let pileRevealToken = 0;
 let selectedCardIds = [];
 let lastClearNoticeMoveNumber = 0;
+let humanHandScrollLeft = 0;
 
 const flightDuration = 760;
 const specialRanks = ["2", "9", "10"];
@@ -281,6 +289,7 @@ const openTutorial = function () {
     }
 
     selectedCardIds = [];
+    humanHandScrollLeft = 0;
     guideMode = true;
     state = createTutorialGame();
     render();
@@ -399,23 +408,22 @@ const makeCardFace = function (card, options = {}) {
     if (card.rank === "?") {
         element.textContent = "?";
         element.setAttribute("aria-label", cardAriaLabel(card));
-        return element;
+    } else {
+        const top = document.createElement("span");
+        top.className = "card-corner top";
+        top.textContent = card.rank;
+
+        const symbol = document.createElement("span");
+        symbol.className = "card-suit";
+        symbol.textContent = suit.symbol;
+
+        const bottom = document.createElement("span");
+        bottom.className = "card-corner bottom";
+        bottom.textContent = card.rank;
+
+        element.append(top, symbol, bottom);
+        element.setAttribute("aria-label", cardAriaLabel(card));
     }
-
-    const top = document.createElement("span");
-    top.className = "card-corner top";
-    top.textContent = card.rank;
-
-    const symbol = document.createElement("span");
-    symbol.className = "card-suit";
-    symbol.textContent = suit.symbol;
-
-    const bottom = document.createElement("span");
-    bottom.className = "card-corner bottom";
-    bottom.textContent = card.rank;
-
-    element.append(top, symbol, bottom);
-    element.setAttribute("aria-label", cardAriaLabel(card));
 
     if (options.button) {
         element.disabled = !options.enabled;
@@ -435,6 +443,15 @@ const makeCardFace = function (card, options = {}) {
                 const alreadySelected = selectedCardIds.includes(areaCard.id);
 
                 if (area === "faceDown") {
+                    const isKnownFaceDown = (player.knownFaceDownIds || []).includes(areaCard.id);
+
+                    if (!isKnownFaceDown) {
+                        state = revealFaceDownCard(state, areaCard.id, 0);
+                        selectedCardIds = [areaCard.id];
+                        render();
+                        return;
+                    }
+
                     selectedCardIds = alreadySelected
                         ? []
                         : [areaCard.id];
@@ -445,7 +462,7 @@ const makeCardFace = function (card, options = {}) {
                 } else if (cardsCanBeSelectedTogether(selectedCards.concat([areaCard]))) {
                     selectedCardIds = selectedCardIds.concat([areaCard.id]);
                 } else {
-                selectedCardIds = [areaCard.id];
+                    selectedCardIds = [areaCard.id];
                 }
 
                 render();
@@ -518,6 +535,7 @@ const makeHandRow = function (cards, options) {
 
         const syncSliderLimit = function () {
             const maximum = Math.max(0, cardsWrap.scrollWidth - cardsWrap.clientWidth);
+            cardsWrap.scrollLeft = Math.min(humanHandScrollLeft, maximum);
             slider.max = String(maximum);
             slider.value = String(Math.min(cardsWrap.scrollLeft, maximum));
             slider.disabled = maximum === 0;
@@ -525,9 +543,11 @@ const makeHandRow = function (cards, options) {
 
         slider.addEventListener("input", function () {
             cardsWrap.scrollLeft = Number(slider.value);
+            humanHandScrollLeft = cardsWrap.scrollLeft;
         });
         cardsWrap.addEventListener("scroll", function () {
             slider.value = String(cardsWrap.scrollLeft);
+            humanHandScrollLeft = cardsWrap.scrollLeft;
         });
 
         window.requestAnimationFrame(syncSliderLimit);
@@ -539,12 +559,20 @@ const makeHandRow = function (cards, options) {
 
 const makePlaySelectedButton = function () {
     const selectedCards = selectedCardsFromCurrentArea();
+    const player = state.players[0];
+    const area = activeArea(player);
+    const canPlaySelection = selectedCards.length > 0 && (
+        area !== "faceDown"
+        || canPlayCard(selectedCards[0], state)
+    );
     const button = document.createElement("button");
     button.className = "play-selected-button";
     button.type = "button";
-    button.disabled = selectedCards.length === 0;
+    button.disabled = !canPlaySelection;
     button.textContent = selectedCards.length === 0
         ? "Select cards to play"
+        : !canPlaySelection
+            ? "Selected card cannot play"
         : `Play selected × ${selectedCards.length}`;
 
     button.addEventListener("click", function () {
@@ -932,6 +960,65 @@ const messageText = function (visible) {
     return `Current playable area: ${visible.phase}.`;
 };
 
+const renderResultConfetti = function (active) {
+    clear(elements.resultConfetti);
+
+    if (!active) {
+        return;
+    }
+
+    const colors = ["#f4c95d", "#c22d35", "#245d4e", "#1f3344", "#ffffff"];
+
+    for (let index = 0; index < 54; index += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.setProperty("--x", `${8 + Math.random() * 84}vw`);
+        piece.style.setProperty("--drift", `${-5 + Math.random() * 10}rem`);
+        piece.style.setProperty("--spin", `${180 + Math.random() * 540}deg`);
+        piece.style.setProperty("--delay", `${Math.random() * 0.45}s`);
+        piece.style.setProperty("--duration", `${1.45 + Math.random() * 0.85}s`);
+        piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+        piece.style.setProperty("--confetti-width", `${0.34 + Math.random() * 0.28}rem`);
+        piece.style.setProperty("--confetti-height", `${0.58 + Math.random() * 0.5}rem`);
+        elements.resultConfetti.append(piece);
+    }
+};
+
+const renderResultNotice = function (visible) {
+    const roundFinished = state.winner !== null || state.stalemate || state.matchWinner !== null;
+    const humanWon = state.winner === 0 || state.matchWinner === 0;
+
+    elements.resultNotice.classList.toggle("is-hidden", !roundFinished);
+    renderResultConfetti(roundFinished && humanWon);
+
+    if (!roundFinished) {
+        return;
+    }
+
+    if (state.matchWinner !== null) {
+        const winnerName = visible.players[state.matchWinner].name;
+        elements.resultNoticeLabel.textContent = "Match over";
+        elements.resultNoticeTitle.textContent = `${winnerName} wins the match`;
+        elements.resultNoticeText.textContent = `${winnerName} reached ${state.scores[state.matchWinner]} points.`;
+        elements.resultContinue.textContent = "Restart match";
+        return;
+    }
+
+    if (state.stalemate) {
+        elements.resultNoticeLabel.textContent = "Round over";
+        elements.resultNoticeTitle.textContent = "Stalemate";
+        elements.resultNoticeText.textContent = "No one could finish the round. Everyone gains 1 point.";
+        elements.resultContinue.textContent = "Next round";
+        return;
+    }
+
+    const winnerName = visible.players[state.winner].name;
+    elements.resultNoticeLabel.textContent = "Round over";
+    elements.resultNoticeTitle.textContent = `${winnerName} wins the round`;
+    elements.resultNoticeText.textContent = `${winnerName} emptied every card and gains 2 points.`;
+    elements.resultContinue.textContent = "Next round";
+};
+
 function render() {
     const visible = getVisibleState(state);
     const topCard = getTopCard(state);
@@ -954,6 +1041,7 @@ function render() {
     elements.restartButton.textContent = (state.winner !== null || state.stalemate) && state.matchWinner === null
         ? "Next round"
         : "Restart";
+    renderResultNotice(visible);
 
     renderPile(topCard);
     renderRoundPlays(visible.roundPlays);
@@ -1049,19 +1137,25 @@ elements.tutorialNext.addEventListener("click", function () {
     renderTutorial();
 });
 
-elements.restartButton.addEventListener("click", function () {
+const restartGame = function () {
     const keepScores = (state.winner !== null || state.stalemate) && state.matchWinner === null;
     state = createGame(Date.now() % 100000, keepScores
         ? state.scores
         : [0, 0, 0, 0]);
     selectedCardIds = [];
+    humanHandScrollLeft = 0;
     closeTutorial(false);
     render();
-});
+};
+
+elements.restartButton.addEventListener("click", restartGame);
+
+elements.resultContinue.addEventListener("click", restartGame);
 
 elements.pickupButton.addEventListener("click", function () {
     state = pickUpPile(state);
     selectedCardIds = [];
+    humanHandScrollLeft = 0;
     render();
     runAITurns();
 });

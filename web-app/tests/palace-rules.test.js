@@ -6,7 +6,8 @@ import {
     getPlayableCards,
     getWinner,
     playCards,
-    pickUpPile
+    pickUpPile,
+    revealFaceDownCard
 } from "../Module.js";
 
 const card = function (rank, suit = "S") {
@@ -103,6 +104,30 @@ describe("Palace turn transitions", function () {
         assert.deepEqual(next.players[0].hand, []);
         assert.equal(next.pile.at(-1).id, "8S");
         assert.equal(next.currentPlayer, 1);
+    });
+
+    it("keeps the turn with the player who picked up the pile", function () {
+        const state = stateWith({
+            players: [
+                {
+                    name: "You",
+                    hand: [card("3")],
+                    faceUp: [],
+                    faceDown: []
+                },
+                {
+                    name: "Computer",
+                    hand: [card("4", "H")],
+                    faceUp: [],
+                    faceDown: []
+                }
+            ],
+            pile: [card("A", "H")]
+        });
+        const next = pickUpPile(state);
+
+        assert.equal(next.currentPlayer, 0);
+        assert.equal(next.phase, "hand");
     });
 
     it("records cards played into the current unresolved round", function () {
@@ -241,6 +266,35 @@ describe("Palace turn transitions", function () {
         assert.equal(next.currentPlayer, 0);
     });
 
+    it("does not draw back to three after a 10 clears the pile", function () {
+        const state = stateWith({
+            players: [
+                {
+                    name: "You",
+                    hand: [card("10")],
+                    faceUp: [card("5")],
+                    faceDown: []
+                },
+                {
+                    name: "Computer",
+                    hand: [card("4", "H")],
+                    faceUp: [],
+                    faceDown: []
+                }
+            ],
+            drawPile: [card("6", "D"), card("7", "D"), card("8", "D")],
+            pile: [card("A", "H")]
+        });
+        const next = playCards(state, ["10S"]);
+
+        assert.deepEqual(next.players[0].hand, []);
+        assert.deepEqual(next.drawPile.map(function (drawCard) {
+            return drawCard.id;
+        }), ["6D", "7D", "8D"]);
+        assert.equal(next.phase, "faceUp");
+        assert.equal(next.currentPlayer, 0);
+    });
+
     it("allows 2 to combine with another rank and become the next challenge", function () {
         const state = stateWith({
             players: [
@@ -297,7 +351,7 @@ describe("Palace turn transitions", function () {
         assert.equal(next.players[0].hand.length, 2);
         assert.deepEqual(next.pile, []);
         assert.deepEqual(next.roundPlays, []);
-        assert.equal(next.currentPlayer, 1);
+        assert.equal(next.currentPlayer, 0);
     });
 
     it("keeps and reveals an illegal face-down card for later", function () {
@@ -323,10 +377,42 @@ describe("Palace turn transitions", function () {
 
         assert.equal(next.players[0].faceDown.length, 1);
         assert.deepEqual(next.players[0].knownFaceDownIds, ["3S"]);
+        assert.deepEqual(next.pile, []);
+        assert.deepEqual(next.players[0].hand.map(function (handCard) {
+            return handCard.id;
+        }), ["AH"]);
+        assert.equal(next.currentPlayer, 0);
+    });
+
+    it("reveals a face-down card without playing it or picking up the pile", function () {
+        const state = stateWith({
+            players: [
+                {
+                    name: "You",
+                    hand: [],
+                    faceUp: [],
+                    faceDown: [card("K")],
+                    knownFaceDownIds: []
+                },
+                {
+                    name: "Computer",
+                    hand: [card("4", "H")],
+                    faceUp: [],
+                    faceDown: []
+                }
+            ],
+            pile: [card("8", "H")]
+        });
+        const next = revealFaceDownCard(state, "KS", 0);
+
+        assert.deepEqual(next.players[0].knownFaceDownIds, ["KS"]);
+        assert.deepEqual(next.players[0].faceDown.map(function (downCard) {
+            return downCard.id;
+        }), ["KS"]);
         assert.deepEqual(next.pile.map(function (pileCard) {
             return pileCard.id;
-        }), ["AH"]);
-        assert.equal(next.currentPlayer, 1);
+        }), ["8H"]);
+        assert.equal(next.currentPlayer, 0);
     });
 
     it("returns a winner once a player has emptied all palace areas", function () {
@@ -399,10 +485,11 @@ describe("Palace turn transitions", function () {
 
         assert.deepEqual(next.players[1].knownFaceDownIds, ["3H"]);
         assert.equal(next.players[1].faceDown.length, 1);
-        assert.deepEqual(next.pile.map(function (pileCard) {
-            return pileCard.id;
+        assert.deepEqual(next.pile, []);
+        assert.deepEqual(next.players[1].hand.map(function (handCard) {
+            return handCard.id;
         }), ["AS"]);
-        assert.equal(next.currentPlayer, 0);
+        assert.equal(next.currentPlayer, 1);
     });
 
     it("finds a match winner once a score reaches 10", function () {

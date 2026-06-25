@@ -1,7 +1,7 @@
 # Palace Card Duel
 **CID**: [YOUR CID]
 
-Palace Card Duel is a browser-based, turn-based card game for the Computing 2: Applications coursework. The player sits at a four-player table against three simple AI players and tries to empty their hand, face-up palace, and face-down palace first.
+Palace Card Duel is my browser version of the card game Palace, made for the Computing 2: Applications coursework. The game puts the user at a four-player table with three computer players, and the aim is to get rid of all cards in the hand, then the face-up palace cards, and finally the face-down cards.
 
 ## How to Run
 
@@ -31,18 +31,18 @@ npm run docs
 
 ## Game Rules
 
-1. Four players sit around the table: the human player and three AI players.
-1. Each player starts with three hand cards, three face-up palace cards, and three face-down palace cards.
-1. Only the human player's hand cards are shown face-up. Other players' hands are shown as card backs.
-1. On your turn, play one or more cards of the same rank from your current playable area.
-1. A normal card must be equal to or higher than the top card on the pile.
-1. A `2` can be played on anything and resets the pile.
-1. A `10` clears the pile and gives the same player another turn.
-1. Four cards of the same rank on top of the pile also clear the pile.
-1. If you cannot play, pick up the pile.
-1. When your hand is empty, you play your face-up palace cards.
-1. When those are empty, you play face-down cards blindly.
-1. The first player with no cards in any palace area wins.
+1. The game is played by four players: one human player and three computer players.
+1. Everyone begins with three cards in hand, three cards face up, and three cards face down.
+1. The player can see their own hand, but the other players' hands stay hidden.
+1. On a turn, the player chooses cards from the current area they are allowed to use.
+1. Most cards have to match or beat the value already on the pile.
+1. A `2` is useful because it can be played after any card.
+1. A `10` clears the whole pile and lets the same player continue.
+1. Four cards of the same rank in a row also clear the pile.
+1. If a player cannot make a legal move, they have to take the pile.
+1. After the hand is empty, the face-up palace cards are used.
+1. After the face-up cards are gone, face-down cards are revealed one at a time.
+1. The round is won by the first player who gets rid of all their cards.
 
 ## Coursework Components
 

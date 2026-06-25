@@ -360,11 +360,16 @@ const withUpdatedPhase = function (state) {
     };
 };
 
-const finishTurn = function (state, playerIndex, keepsTurn) {
+const finishTurn = function (state, playerIndex, keepsTurn, refillNextPlayer = true) {
     const nextPlayerIndex = keepsTurn
         ? playerIndex
         : (playerIndex + 1) % state.players.length;
-    const refilled = drawToThreeAtTurnStart(state.players[nextPlayerIndex], state.drawPile);
+    const refilled = refillNextPlayer
+        ? drawToThreeAtTurnStart(state.players[nextPlayerIndex], state.drawPile)
+        : {
+            player: clonePlayer(state.players[nextPlayerIndex]),
+            drawPile: state.drawPile.slice()
+        };
     const players = state.players.map(function (player, index) {
         return index === nextPlayerIndex
             ? refilled.player
@@ -573,6 +578,30 @@ export const getPlayableCards = function (state, playerIndex = state.currentPlay
 };
 
 /**
+ * Reveal one face-down palace card without playing it yet. This lets the
+ * player inspect the card before choosing whether to play it or pick up.
+ *
+ * @param {GameState} state Current game state.
+ * @param {string} cardId Face-down card id to reveal.
+ * @param {number} [playerIndex=state.currentPlayer] Player revealing the card.
+ * @returns {GameState} New game state with the card remembered.
+ */
+export const revealFaceDownCard = function (state, cardId, playerIndex = state.currentPlayer) {
+    const next = cloneState(state);
+    const player = next.players[playerIndex];
+    const card = player.faceDown.find(function (candidate) {
+        return candidate.id === cardId;
+    });
+
+    if (!card) {
+        return next;
+    }
+
+    player.knownFaceDownIds = Array.from(new Set((player.knownFaceDownIds || []).concat([card.id])));
+    return withUpdatedPhase(next);
+};
+
+/**
  * Play one or more cards of the same rank from the active player's current
  * area. When a face-down card is illegal, the player must take the pile.
  *
@@ -623,11 +652,14 @@ export const playCards = function (state, cardIds) {
         player.knownFaceDownIds = Array.from(new Set((player.knownFaceDownIds || []).concat(selected.map(function (card) {
             return card.id;
         }))));
+        player.hand = player.hand.concat(next.pile);
         return withUpdatedPhase(log(finishTurn({
             ...next,
             players: next.players,
+            pile: [],
+            roundPlays: [],
             lastPlay: null
-        }, playerIndex, false), `${player.name} revealed ${selected[0].rank} but kept it for later.`));
+        }, playerIndex, true, false), `${player.name} revealed ${selected[0].rank}, kept it for later, and picked up the pile.`));
     }
 
     player[area] = removeCardsById(player[area], cardIds);
@@ -657,7 +689,7 @@ export const playCards = function (state, cardIds) {
         ? `${player.name} played ${selected.length} ${selected[0].rank} and cleared the pile.`
         : `${player.name} played ${selected.length} ${selected[0].rank}.`;
 
-    return log(finishTurn(afterPlay, playerIndex, keepsTurn), message);
+    return log(finishTurn(afterPlay, playerIndex, keepsTurn, !keepsTurn), message);
 };
 
 /**
@@ -679,7 +711,7 @@ export const pickUpPile = function (state) {
     next.roundPlays = [];
     next.lastPlay = null;
 
-    return log(finishTurn(next, next.currentPlayer, false), `${player.name} picked up the pile.`);
+    return log(finishTurn(next, next.currentPlayer, true, false), `${player.name} picked up the pile.`);
 };
 
 /**
