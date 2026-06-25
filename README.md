@@ -1,7 +1,7 @@
 # Palace Card Duel
 **CID**: [YOUR CID]
 
-Palace Card Duel is my browser version of the card game Palace, made for the Computing 2: Applications coursework. The game puts the user at a four-player table with three computer players, and the aim is to get rid of all cards in the hand, then the face-up palace cards, and finally the face-down cards.
+Palace Card Duel is a four-player browser card game based on Palace. The player sits at the bottom of the table against three computer players, trying to clear their hand first before moving on to the face-up and face-down palace cards.
 
 ## How to Run
 
