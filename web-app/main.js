@@ -1,3 +1,5 @@
+/*jslint browser */
+
 import {
     autoPlayTurn,
     canPlayCard,
@@ -62,39 +64,42 @@ const suitSortValues = {
     "?": 9
 };
 
+// This helper function shortens document.getElementById calls.
+const el = (id) => document.getElementById(id);
+
 const elements = {
-    tutorial: document.querySelector("#tutorial"),
-    tutorialText: document.querySelector("#tutorial-text"),
-    tutorialAction: document.querySelector("#tutorial-action"),
-    tutorialStepCount: document.querySelector("#tutorial-step-count"),
-    tutorialBack: document.querySelector("#tutorial-back"),
-    tutorialNext: document.querySelector("#tutorial-next"),
-    closeTutorial: document.querySelector("#close-tutorial"),
-    clearNotice: document.querySelector("#clear-notice"),
-    clearNoticeText: document.querySelector("#clear-notice-text"),
-    clearContinue: document.querySelector("#clear-continue"),
-    resultNotice: document.querySelector("#result-notice"),
-    resultConfetti: document.querySelector("#result-confetti"),
-    resultNoticeLabel: document.querySelector("#result-notice-label"),
-    resultNoticeTitle: document.querySelector("#result-notice-title"),
-    resultNoticeText: document.querySelector("#result-notice-text"),
-    resultContinue: document.querySelector("#result-continue"),
-    guideButton: document.querySelector("#guide-button"),
-    restartButton: document.querySelector("#restart-button"),
-    pickupButton: document.querySelector("#pickup-button"),
-    turnStatus: document.querySelector("#turn-status"),
-    topCard: document.querySelector("#top-card"),
-    drawCount: document.querySelector("#draw-count"),
-    burnedCount: document.querySelector("#burned-count"),
-    pile: document.querySelector("#pile"),
-    roundPlays: document.querySelector("#round-plays"),
-    message: document.querySelector("#message"),
-    gameLog: document.querySelector("#game-log"),
+    tutorial: el("tutorial"),
+    tutorialText: el("tutorial-text"),
+    tutorialAction: el("tutorial-action"),
+    tutorialStepCount: el("tutorial-step-count"),
+    tutorialBack: el("tutorial-back"),
+    tutorialNext: el("tutorial-next"),
+    closeTutorial: el("close-tutorial"),
+    clearNotice: el("clear-notice"),
+    clearNoticeText: el("clear-notice-text"),
+    clearContinue: el("clear-continue"),
+    resultNotice: el("result-notice"),
+    resultConfetti: el("result-confetti"),
+    resultNoticeLabel: el("result-notice-label"),
+    resultNoticeTitle: el("result-notice-title"),
+    resultNoticeText: el("result-notice-text"),
+    resultContinue: el("result-continue"),
+    guideButton: el("guide-button"),
+    restartButton: el("restart-button"),
+    pickupButton: el("pickup-button"),
+    turnStatus: el("turn-status"),
+    topCard: el("top-card"),
+    drawCount: el("draw-count"),
+    burnedCount: el("burned-count"),
+    pile: el("pile"),
+    roundPlays: el("round-plays"),
+    message: el("message"),
+    gameLog: el("game-log"),
     seats: [
-        document.querySelector("#player-0"),
-        document.querySelector("#player-1"),
-        document.querySelector("#player-2"),
-        document.querySelector("#player-3")
+        el("player-0"),
+        el("player-1"),
+        el("player-2"),
+        el("player-3")
     ]
 };
 

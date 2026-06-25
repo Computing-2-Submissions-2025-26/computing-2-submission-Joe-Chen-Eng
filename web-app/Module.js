@@ -1,3 +1,5 @@
+/*jslint */
+
 /**
  * Palace is a turn-based card game for four players. Players try to be the
  * first to empty their hand, face-up palace cards, and face-down palace cards.
@@ -831,3 +833,22 @@ export const getTutorialSteps = function () {
         "If you cannot play, pick up the pile. Round winners gain 2 points, stalemates give everyone 1 point, and first to 10 wins the match."
     ];
 };
+
+const Palace = Object.create(null);
+
+Palace.autoPlayTurn = autoPlayTurn;
+Palace.canPlayCard = canPlayCard;
+Palace.createGame = createGame;
+Palace.createTutorialGame = createTutorialGame;
+Palace.getCurrentPlayer = getCurrentPlayer;
+Palace.getPlayableCards = getPlayableCards;
+Palace.getTopCard = getTopCard;
+Palace.getTutorialSteps = getTutorialSteps;
+Palace.getVisibleState = getVisibleState;
+Palace.getWinner = getWinner;
+Palace.isGameOver = isGameOver;
+Palace.pickUpPile = pickUpPile;
+Palace.playCards = playCards;
+Palace.revealFaceDownCard = revealFaceDownCard;
+
+export default Object.freeze(Palace);
